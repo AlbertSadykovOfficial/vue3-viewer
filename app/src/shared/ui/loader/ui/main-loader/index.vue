@@ -1,12 +1,11 @@
 <template>
   <teleport to="body">
     <div class="loader-component">
-      <Spin size="large" />
+      Loading...
     </div>
   </teleport>
 </template>
 <script setup lang="ts">
-import { Spin } from "ant-design-vue";
 </script>
 <style>
 .loader-component {

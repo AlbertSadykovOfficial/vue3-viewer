@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Spin } from "ant-design-vue";
 import { RouteMeta, RouterView, useRouter } from "vue-router";
 import { MainLoader } from "../shared/ui/loader/ui/main-loader";
 import { ref } from "vue";
@@ -25,6 +24,7 @@ router.beforeEach(() => {
 router.afterEach(() => {
   isShowLoader.value = false;
 });
+
 </script>
 
 <template>
@@ -35,7 +35,7 @@ router.afterEach(() => {
           <template #default>
             <component :is="Component" />
           </template>
-          <template #fallback> <Spin /> </template>
+          <template #fallback>...</template>
         </Suspense>
       </Transition>
     </template>

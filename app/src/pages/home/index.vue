@@ -1,7 +1,7 @@
 <template>
-  <button>
-    <slot />
-  </button>
+  <div>
+    Hello
+  </div>
 </template>
 <script setup lang="ts">
 </script>
