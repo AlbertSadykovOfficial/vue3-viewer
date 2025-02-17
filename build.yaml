@@ -1,0 +1,12 @@
+services:
+  vue_build:
+    container_name: vue3_viewer_build
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - "./app:/app/"
+      - "./logs:/root/.npm/_logs"
+    command: bash -c "npm run build"
+    # Debug Mode:
+    # command: bash -c "node -e 'function debug () { setTimeout(debug, 100000000) }; debug()'"

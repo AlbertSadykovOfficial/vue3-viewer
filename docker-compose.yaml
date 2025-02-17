@@ -1,0 +1,18 @@
+services:
+  vue_prod:
+    container_name: vue3_viewer_prod
+    build: .
+    env_file:
+      - .env
+    environment:
+      - HOST=0.0.0.0 # ! Обязательно, иначе не пробрасываются порты
+    ports:
+      - "${EXTERNAL_PORT}:3000"
+    volumes:
+      - "./app/dist/:/app/dist/"
+      - "./app/package.json:/app/package.json"
+      - "./logs:/root/.npm/_logs"
+    restart: always
+    command: bash -c "npm run preview"
+    # Debug Mode:
+    # command: bash -c "node -e 'function debug () { setTimeout(debug, 100000000) }; debug()'"

@@ -1,0 +1,12 @@
+services:
+  vue_install_dependency:
+    container_name: vue3_viewer_install_dependency
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - "./app:/app/"
+      - "./logs:/root/.npm/_logs"
+    command: bash -c "npm install"
+    # Debug Mode:
+    # command: bash -c "node -e 'function debug () { setTimeout(debug, 100000000) }; debug()'"
