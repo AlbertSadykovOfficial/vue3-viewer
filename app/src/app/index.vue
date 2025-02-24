@@ -4,7 +4,7 @@ import { Routing } from "../pages";
 
 <template>
   <div class="app">
-    <main>
+    <main style="height: 100%;">
       <Routing />
     </main>
   </div>
