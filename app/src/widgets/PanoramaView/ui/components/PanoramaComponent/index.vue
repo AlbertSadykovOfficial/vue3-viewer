@@ -2,7 +2,7 @@
   <div ref="container" class="scene-container"></div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 import { TextureLoader, Vector3 } from '@/shared/lib/three';
 
@@ -16,10 +16,13 @@ import useRenderer from "./composables/useRenderer"
 import useLoadAndRenderTiles from "./composables/useLoadAndRenderTiles"
 import useAnimate from "./composables/useAnimate";
 
+import type { PropType } from 'vue'
+import type { TPanoramaDict } from "../../../model/types";
+
 export default defineComponent({
   props: {
     panoramas: {
-      type: Object,
+      type: Object as PropType<TPanoramaDict>,
       required: true,
     }
   },
@@ -36,7 +39,7 @@ export default defineComponent({
     // ======================= //
 
     /** @type {{value: HTMLElement}} Контейнер для canvas */
-    const container = ref(null);
+    const container = ref<HTMLDivElement>();
 
     // ======================= //
     //          SETUP          //
@@ -135,8 +138,10 @@ export default defineComponent({
         renderer.render(scene, camera);
       };
 
-      // Поместить рендер в контейнер шаблона
-      pushRenderer(container.value, renderer)
+      if (container.value instanceof HTMLDivElement) {
+        // Поместить рендер в контейнер шаблона
+        pushRenderer(container.value, renderer)
+      }
 
       // Добавить на сцену сферическое представление
       scene.add(sphere);
@@ -159,7 +164,9 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      setup()
+      if (container.value instanceof HTMLDivElement) {
+        setup()
+      }
     });
 
     return { container };
