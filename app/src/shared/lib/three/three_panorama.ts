@@ -14,3 +14,5 @@ export {
   SphereGeometry,
   Quaternion
 } from 'three'
+
+export type { Object3DEventMap } from 'three'
