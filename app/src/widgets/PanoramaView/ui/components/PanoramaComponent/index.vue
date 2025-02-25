@@ -76,7 +76,7 @@ export default defineComponent({
       const { startButtonClickListener, createNavigationButtons, deleteAllButtons } = useNavigationButtons(scene, camera, renderer, textureLoader,(button) => {
         /**
          * Чтоб не ждать завершения анимации
-         * Подгружаем в кэш тайлы панорамы на которую переходим
+         * Подгружаем [в кэш]! тайлы панорамы на которую переходим
          * (Но не рендерим)
          */
         bindAndLoad(panoramas[button.nextPanoramaKey], camera)
@@ -87,9 +87,23 @@ export default defineComponent({
          * Затем ререндерим
          */
         const { x, y, z } = button.position
+        const nextPanoramaKey = button.nextPanoramaKey
+        deleteAllButtons();
         animateZoomToPoint(camera, new Vector3(x, y, z), () => {
-          currentPanorama = button.nextPanoramaKey;
-          refreshScene();
+          renderer.domElement.style.transition = "opacity 0.3s";
+          renderer.domElement.style.opacity = "0";
+
+          /**
+           * Откладываем смену панорамы на время анимации (transition opacity),
+           * чтобы не было мерцания
+           * Затем ререндерим
+           */
+          setTimeout(async () => {
+            currentPanorama = nextPanoramaKey;
+            await refreshScene();
+            // Показываем панораму после обновления рендера
+            renderer.domElement.style.opacity = "1";
+          }, 300);
         });
       })
 
@@ -104,10 +118,10 @@ export default defineComponent({
        * Подгружаем и рендерим тайлы в области видимости
        * Создаем кнопки для этой панорамы
        */
-      const refreshScene = () => {
+      const refreshScene = async () => {
         deleteAllButtons();
         cameraToDefault(camera);
-        loadAndRenderTiles(panoramas[currentPanorama], camera, sphere);
+        await loadAndRenderTiles(panoramas[currentPanorama], camera, sphere);
         createNavigationButtons(panoramas[currentPanorama].buttons, camera);
       }
 

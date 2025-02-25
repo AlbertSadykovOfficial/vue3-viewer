@@ -1,28 +1,56 @@
-export default function useAnimate(duration = 800, endFov = 30) {
-  const animateZoomToPoint = (camera, targetPosition, callback) => {
-    let startTime = performance.now();
-    let startFov = camera.fov;
-    let startPosition = camera.position.clone();
+import { Vector3 } from '@/shared/lib/three';
+import { Quaternion } from 'three'
 
-    const animate = (time) => {
+export default function useAnimate(duration = 800, endFov = 30) {
+  const animateZoomToPoint = (camera, buttonPosition, callback) => {
+    let startTime = performance.now();
+
+    /*
+     * Для анимации приближения animateMovement
+     */
+    let startFov = camera.fov;
+
+    /*
+     * Для анимации поворота animateRotation
+     * Используем lookAt для определения целевого угла поворота
+     */
+    let targetQuaternion = new Quaternion();
+    let tempCamera = camera.clone();
+
+    tempCamera.lookAt(buttonPosition);
+    targetQuaternion.copy(tempCamera.quaternion);
+
+    const animateRotation = (time) => {
       let elapsed = time - startTime;
-      let progress = Math.min(elapsed / duration, 1);
+      let progress = Math.min(elapsed / duration, 1); // Прогресс от 0 до 1
+
+      // Плавное вращение камеры
+      camera.quaternion.slerp(targetQuaternion, progress);
+
+      if (progress < 1) {
+        requestAnimationFrame(animateRotation);
+      } else {
+        startTime = performance.now(); // Обновляем таймер перед анимацией приближения
+        requestAnimationFrame(animateMovement);
+      }
+    };
+
+    const animateMovement = (time) => {
+      let elapsed = time - startTime;
+      let progress = Math.min(elapsed / duration, 1); // Прогресс от 0 до 1
 
       // Интерполяция FOV (зум)
       camera.fov = startFov + (endFov - startFov) * progress;
       camera.updateProjectionMatrix();
 
-      // Интерполяция позиции (движение к кнопке)
-      camera.position.lerpVectors(startPosition, targetPosition, progress);
-
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        requestAnimationFrame(animateMovement);
       } else {
-        callback(); // После завершения зума вызываем callback
+        callback(); // После завершения анимации меняем панораму
       }
     };
 
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animateRotation);
   };
 
   return { animateZoomToPoint };
