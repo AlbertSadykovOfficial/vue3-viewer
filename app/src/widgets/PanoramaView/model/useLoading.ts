@@ -7,16 +7,18 @@ export function useLoading() {
   let firstLoading = true;
   let totalTiles = 0;
   let loadedTiles = 0;
-  let loadingTimeout = null
+  let loadingTimeout: ReturnType<typeof setTimeout> | null = null
 
-  function loadStarted(total) {
+  function loadStarted(total: number) {
     totalTiles = total;
     loadedTiles = 0;
     if (firstLoading) {
       firstLoading = false
       isLoading.value = true;
     } else {
-      clearTimeout(loadingTimeout)
+      if (typeof loadingTimeout === 'number') {
+        clearTimeout(loadingTimeout)
+      }
       loadingTimeout = setTimeout(() => {
         isLoading.value = true;
         loadingTimeout = null;
@@ -32,7 +34,7 @@ export function useLoading() {
 
   function loadingEnded() {
     isLoading.value = false;
-    if (loadingTimeout) {
+    if (typeof loadingTimeout === 'number') {
       window.clearTimeout(loadingTimeout);
       loadingTimeout = null;
     }
