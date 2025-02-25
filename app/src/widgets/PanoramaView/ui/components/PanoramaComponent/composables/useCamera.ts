@@ -1,20 +1,20 @@
 import { PerspectiveCamera } from '@/shared/lib/three';
-import { PerspectiveCamera } from 'three'
-export default function useCamera(fov, ratio, near, far) {
+
+export default function useCamera(fov: number, ratio: number, near: number, far: number) {
   const camera = new PerspectiveCamera(fov, ratio, near, far);
   camera.position.set(0, 0, 2);
 
   /**
    * Обновить
    */
-  const cameraUpdate = (camera) => {
+  const cameraUpdate = (camera: PerspectiveCamera) => {
     camera.updateProjectionMatrix();
   }
 
   /**
    * Выставить значение камеры в исходные параметры
    */
-  const cameraSetDefault = (camera) => {
+  const cameraSetDefault = (camera: PerspectiveCamera) => {
     camera.fov = fov
     camera.position.set(0, 0, 2);
     /*
@@ -28,7 +28,7 @@ export default function useCamera(fov, ratio, near, far) {
   /**
    * Установить начальные значения и обновить
    */
-  const cameraToDefault = (camera) => {
+  const cameraToDefault = (camera: PerspectiveCamera) => {
     cameraSetDefault(camera)
     cameraUpdate(camera)
   }
