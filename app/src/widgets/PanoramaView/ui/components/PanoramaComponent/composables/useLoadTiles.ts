@@ -1,4 +1,4 @@
-import { TextureLoader } from '@/shared/lib/three';
+import { TextureLoader, Texture } from '@/shared/lib/three';
 
 /**
  * @param {THREE.TextureLoader} textureLoader - Загрузчик текстур
@@ -14,7 +14,7 @@ export default function useLoadTiles(textureLoader = new TextureLoader()) {
    * @param {Function} callback - Функция обратного вызоыва
    * @return {Promise<THREE.Texture>} Текстура тайла
    */
-  const loadTile = (url: string, callback: () => void = () => {}) => {
+  const loadTile = (url: string, callback: () => void = () => {}): Promise<Texture> => {
     return new Promise((resolve) => {
       if (tiles.has(url)) {
         return resolve(tiles.get(url));
