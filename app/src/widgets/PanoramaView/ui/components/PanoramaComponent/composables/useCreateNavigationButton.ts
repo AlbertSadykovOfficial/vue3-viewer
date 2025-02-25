@@ -1,25 +1,25 @@
 import { Mesh, CircleGeometry, MeshBasicMaterial, Vector3, PlaneGeometry, TextureLoader } from '@/shared/lib/three';
-
+import type { PerspectiveCamera, Texture } from '@/shared/lib/three'
 /**
  * @param {THREE.TextureLoader} textureLoader - Загрузчик текстур
  */
 export default function useCreateNavigationButton(
-  textureLoader = new TextureLoader()
+  textureLoader: TextureLoader = new TextureLoader()
 ) {
 
   /**
     * Загружаем текстуру
     * И Замыкаем ее для переиспользования
     */
-  const arrowMap = textureLoader.load('arrow.png')
+  const arrowMap: Texture = textureLoader.load('arrow.png')
 
   /**
    * Создать Mesh кнопки навигации по координатам
-   * @param {THREE.camera} camera - Камера
+   * @param {THREE.PerspectiveCamera} camera - Камера
    * @param {{ x: number, y: number, z: number }} - Массив координат
    * @return {THREE.Mesh} Mesh кнопки
    */
-  const createNavigationButton = (camera, { x, y, z }) => {
+  const createNavigationButton = (camera: PerspectiveCamera, { x, y, z }: Vector3) => {
     const buttonMesh = new Mesh(
       new CircleGeometry(1, 32), // buttonGeometry
       new MeshBasicMaterial({ color: 0x808080, transparent: true, opacity: 0.5 }) // buttonMaterial
