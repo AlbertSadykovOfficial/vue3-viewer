@@ -6,6 +6,13 @@ import { Mesh, CircleGeometry, MeshBasicMaterial, Vector3, PlaneGeometry, Textur
 export default function useCreateNavigationButton(
   textureLoader = new TextureLoader()
 ) {
+
+  /**
+    * Загружаем текстуру
+    * И Замыкаем ее для переиспользования
+    */
+  const arrowMap = textureLoader.load('arrow.png')
+
   /**
    * Создать Mesh кнопки навигации по координатам
    * @param {THREE.camera} camera - Камера
@@ -26,7 +33,7 @@ export default function useCreateNavigationButton(
       new PlaneGeometry(1, 1),
       //arrowMaterial
       new MeshBasicMaterial({
-        map: textureLoader.load('arrow.png'),
+        map: arrowMap,
         transparent: true
       })
     );
