@@ -1,15 +1,12 @@
-<script setup>
+<script setup lang="ts">
 import styles from "./styles.module.css";
 import { useLoading } from '../model/useLoading';
+import type { TPanoramaDict } from "../model/types";
+
 import PanoramaComponent from './components/PanoramaComponent/';
 import PanoramaLoader from './components/PanoramaLoader/';
 
-defineProps({
-  panoramas: {
-    type: Object,
-    required: true
-  }
-})
+defineProps<{ panoramas: TPanoramaDict }>()
 
 const { isLoading, loadingProgress, loadStarted, onTileLoaded, loadingEnded } = useLoading();
 
@@ -19,7 +16,7 @@ const { isLoading, loadingProgress, loadStarted, onTileLoaded, loadingEnded } = 
   <div :class="styles.container">
     <PanoramaComponent
       :panoramas="panoramas"
-      @load-started="total_tiles => loadStarted(total_tiles)"
+      @load-started="loadStarted"
       @tile-loaded="onTileLoaded"
       @load-ended="loadingEnded"
     />
