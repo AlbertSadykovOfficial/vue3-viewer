@@ -1,8 +1,8 @@
-import { Vector3 } from '@/shared/lib/three';
-import { Quaternion } from 'three'
+import { Quaternion } from '@/shared/lib/three';
+import type { PerspectiveCamera, Vector3 } from '@/shared/lib/three';
 
 export default function useAnimate(duration = 800, endFov = 30) {
-  const animateZoomToPoint = (camera, buttonPosition, callback) => {
+  const animateZoomToPoint = (camera: PerspectiveCamera, buttonPosition: Vector3, callback: () => void) => {
     let startTime = performance.now();
 
     /*
@@ -20,7 +20,7 @@ export default function useAnimate(duration = 800, endFov = 30) {
     tempCamera.lookAt(buttonPosition);
     targetQuaternion.copy(tempCamera.quaternion);
 
-    const animateRotation = (time) => {
+    const animateRotation = (time: number) => {
       let elapsed = time - startTime;
       let progress = Math.min(elapsed / duration, 1); // Прогресс от 0 до 1
 
@@ -35,7 +35,7 @@ export default function useAnimate(duration = 800, endFov = 30) {
       }
     };
 
-    const animateMovement = (time) => {
+    const animateMovement = (time: number) => {
       let elapsed = time - startTime;
       let progress = Math.min(elapsed / duration, 1); // Прогресс от 0 до 1
 
