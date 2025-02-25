@@ -24,7 +24,7 @@ export default function useNavigationButtons(
   /**
    * Создать кнопки навигации панорамы и добавить их на рендер
    */
-  const createNavigationButtons = (buttons: TNavigationButtons, camera: PerspectiveCamera) => {
+  const createNavigationButtons = (buttons: Array<TPanoramaButton>, camera: PerspectiveCamera) => {
     for (const i in buttons) {
       const button = createNavigationButton(camera, buttons[i].position)
       navigationButtons[button.uuid] = {
