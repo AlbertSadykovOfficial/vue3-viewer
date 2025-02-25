@@ -4,18 +4,15 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, defineProps } from 'vue';
 
 // ======================= //
 //          Props          //
 // ======================= //
-const props = defineProps({
-  progress: {
-    type: Number,
-    default: 0
-  }
-});
+const props = withDefaults(defineProps<{ progress: number }>(), {
+  progress: 0,
+})
 
 // ======================= //
 //        Variables        //
