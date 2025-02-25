@@ -6,15 +6,15 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import { TextureLoader, Vector3 } from '@/shared/lib/three';
 
-import useNavigationButtons from './hooks/useNavigationButtons'
-import useScrollHandler from "./hooks/useScrollHandler"
-import useControls from "./hooks/useControls"
-import useSphere from "./hooks/useSphere";
-import useScene from "./hooks/useScene"
-import useCamera from "./hooks/useCamera"
-import useRenderer from "./hooks/useRenderer"
-import useLoadAndRenderTiles from "./hooks/useLoadAndRenderTiles"
-import useAnimate from "./hooks/useAnimate";
+import useNavigationButtons from './composables/useNavigationButtons'
+import useScrollHandler from "./composables/useScrollHandler"
+import useControls from "./composables/useControls"
+import useSphere from "./composables/useSphere";
+import useScene from "./composables/useScene"
+import useCamera from "./composables/useCamera"
+import useRenderer from "./composables/useRenderer"
+import useLoadAndRenderTiles from "./composables/useLoadAndRenderTiles"
+import useAnimate from "./composables/useAnimate";
 
 export default defineComponent({
   props: {
