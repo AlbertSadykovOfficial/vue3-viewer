@@ -1,10 +1,10 @@
 import { WebGLRenderer } from '@/shared/lib/three';
 
-export default function useRenderer(width, height, options={}) {
+export default function useRenderer(width: number, height: number, options={}) {
   const renderer = new WebGLRenderer(options);
   renderer.setSize(width, height);
 
-  const pushRenderer = (HTMLElement, renderer=renderer) => {
+  const pushRenderer = (HTMLElement: HTMLElement, renderer: WebGLRenderer) => {
     HTMLElement.appendChild(renderer.domElement)
   }
 
