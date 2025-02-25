@@ -11,5 +11,6 @@ export {
   Scene,
   PerspectiveCamera,
   WebGLRenderer,
-  SphereGeometry
+  SphereGeometry,
+  Quaternion
 } from 'three'
