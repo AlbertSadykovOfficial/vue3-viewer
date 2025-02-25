@@ -1,16 +1,17 @@
 import { Vector3 } from '@/shared/lib/three';
+import type { PerspectiveCamera } from '@/shared/lib/three'
 
-export default function useTileVisible() {
+export default function useTilesVisible() {
   /**
    * Проверка видимости тайла
-   * @param {THREE.camera} camera - Камера
+   * @param {THREE.PerspectiveCamera} camera - Камера
    * @param {number} x - Координата X тайла
    * @param {number} y - Координата Y тайла
    * @param {number} tileXLen - Кол-во тайлов при заданном качестве по X
    * @param {number} tileYLen - Кол-во тайлов при заданном качестве по Y
    * @return {boolean} Отображать ли тайл
    */
-  const isTileVisible = (camera, x, y, tileXLen, tileYLen) => {
+  const isTileVisible = (camera: PerspectiveCamera, x: number, y: number, tileXLen: number, tileYLen: number) => {
     const k = 1 // Увеличивая коэффициент, область видимости расширяется
     const phi = ((y + k) / tileYLen) * Math.PI;
     const theta = ((x + k) / tileXLen) * 2 * Math.PI;
@@ -32,7 +33,7 @@ export default function useTileVisible() {
    * @param {Function} conditionF - Условие для записи в список
    * @return {Array<{ x: number, y: number }>} Массив Значений для подгрузк тайлов
    */
-  const getTilesByCondition = (tileXLen, tileYLen, conditionF) => {
+  const getTilesByCondition = (tileXLen: number, tileYLen: number, conditionF: (x: number, y: number) => boolean) => {
     const tilesInView = [];
     for (let y = 0; y < tileYLen; y++) {
       for (let x = 0; x < tileXLen; x++) {
