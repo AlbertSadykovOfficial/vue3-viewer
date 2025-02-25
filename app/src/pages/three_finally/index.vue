@@ -14,19 +14,20 @@ export default {
     const panoramas = {
       panorama1: {
         tilesPath: '/merged/panorama1/',
-        buttons: [{
-          position: {
-            x: 20,
-            y: -8,
-            z: 0
-          },
-          nextPanoramaKey: 'panorama2',
-        },
+        buttons: [
           {
             position: {
-              x: 10,
+              x: 20,
               y: -8,
               z: 0
+            },
+            nextPanoramaKey: 'panorama2',
+          },
+          {
+            position: {
+              x: -20,
+              y: -8,
+              z: 10
             },
             nextPanoramaKey: 'panorama3',
           }
@@ -95,7 +96,7 @@ export default {
           position: {
             x: 20,
             y: -5,
-            z: -8
+            z: 7
           },
           nextPanoramaKey: 'panorama1',
         }],
