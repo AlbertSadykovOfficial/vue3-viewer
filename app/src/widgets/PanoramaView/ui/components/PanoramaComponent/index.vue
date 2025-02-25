@@ -6,15 +6,16 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import { TextureLoader, Vector3 } from '@/shared/lib/three';
 
-import useNavigationButtons from './composables/useNavigationButtons'
-import useScrollHandler from "./composables/useScrollHandler"
-import useControls from "./composables/useControls"
-import useSphere from "./composables/useSphere";
 import useScene from "./composables/useScene"
 import useCamera from "./composables/useCamera"
 import useRenderer from "./composables/useRenderer"
+import useSphere from "./composables/useSphere";
+import useControls from "./composables/useControls"
+
 import useLoadAndRenderTiles from "./composables/useLoadAndRenderTiles"
 import useAnimate from "./composables/useAnimate";
+import useNavigationButtons from './composables/useNavigationButtons'
+import useScrollHandler from "./composables/useScrollHandler"
 
 import type { PropType } from 'vue'
 import type { TPanoramaDict } from "../../../model/types";
