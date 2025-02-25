@@ -19,7 +19,7 @@ export default function useCreateNavigationButton(
    * @param {{ x: number, y: number, z: number }} - Массив координат
    * @return {THREE.Mesh} Mesh кнопки
    */
-  const createNavigationButton = (camera: PerspectiveCamera, { x, y, z }: Vector3) => {
+  const createNavigationButton = (camera: PerspectiveCamera, { x, y, z }: { x: number, y: number, z: number }) => {
     const buttonMesh = new Mesh(
       new CircleGeometry(1, 32), // buttonGeometry
       new MeshBasicMaterial({ color: 0x808080, transparent: true, opacity: 0.5 }) // buttonMaterial
