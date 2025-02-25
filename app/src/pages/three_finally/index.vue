@@ -21,7 +21,16 @@ export default {
             z: 0
           },
           nextPanoramaKey: 'panorama2',
-        }],
+        },
+          {
+            position: {
+              x: 10,
+              y: -8,
+              z: 0
+            },
+            nextPanoramaKey: 'panorama3',
+          }
+        ],
         LEVELS: {
           low: 'low',
           medium: 'medium',
@@ -40,10 +49,10 @@ export default {
           medium: '/medium/{x}_{y}.png',
           high: '/high/{x}_{y}.png'
         },
-        getLevelByZoomFov: (fov) => {
-          if (fov > 70) return 'low';
-          if (fov > 50) return 'medium';
-          return 'high';
+        LEVELS_BY_ZOOM: {
+          75: 'low',
+          50: 'medium',
+          0: 'high'
         }
       },
       panorama2: {
@@ -74,10 +83,10 @@ export default {
           medium: '/medium/{x}_{y}.png',
           high: '/high/{x}_{y}.png'
         },
-        getLevelByZoomFov: (fov) => {
-          if (fov > 70) return 'low';
-          if (fov > 50) return 'medium';
-          return 'high';
+        LEVELS_BY_ZOOM: {
+          75: 'low',
+          50: 'medium',
+          0: 'high'
         }
       },
       panorama3: {
@@ -115,12 +124,12 @@ export default {
           'medium-high': '/50/{x}_{y}.png',
           'high': '/100/{x}_{y}.png'
         },
-        getLevelByZoomFov: (fov) => {
-          if (fov > 75) return 'low';
-          if (fov > 60) return 'low-medium';
-          if (fov > 50) return 'medium';
-          if (fov > 30) return 'medium-high';
-          return 'high';
+        LEVELS_BY_ZOOM: {
+          75: 'low',
+          60: 'low-medium',
+          50: 'medium',
+          30: 'medium-high',
+          0: 'high'
         }
       }
     };

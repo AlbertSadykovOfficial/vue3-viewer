@@ -42,8 +42,24 @@ export default function useLoadAndRenderTiles(emit, textureLoader = new TextureL
     return [textures, visibleTiles]
   }
 
+  const getLevelByZoomFov = (levelsByZoom, zoom) => {
+    let target_zoom = 0
+    let max_zoom = target_zoom
+    for (const zoomLevel in levelsByZoom) {
+      if (zoomLevel >= target_zoom) {
+        if (zoomLevel > zoom) {
+          return levelsByZoom[target_zoom]
+        } else {
+          max_zoom = zoomLevel
+        }
+        target_zoom = zoomLevel
+      }
+    }
+    return levelsByZoom[max_zoom]
+  }
+
   const bindAndLoad = async (panorama, camera) => {
-    const textureLevel = panorama.getLevelByZoomFov(camera.fov);
+    const textureLevel = getLevelByZoomFov(panorama.LEVELS_BY_ZOOM, camera.fov);
     const prerender = panorama.PRERENDER?.[textureLevel]
 
     const tileXLen = panorama.XY_TILE_RANGE[textureLevel][X_INDEX]
