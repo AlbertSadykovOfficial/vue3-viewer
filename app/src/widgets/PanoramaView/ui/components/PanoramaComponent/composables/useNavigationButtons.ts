@@ -14,7 +14,7 @@ export default function useNavigationButtons(
   camera: PerspectiveCamera,
   renderer: WebGLRenderer,
   textureLoader: TextureLoader,
-  callback: (button?: TNavigationButton) => void = () => {}
+  callback: (button: TNavigationButton) => void = () => {}
 ) {
 
   /** @type {TNavigationButtons} Кнопки навигации */
