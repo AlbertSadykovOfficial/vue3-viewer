@@ -32,6 +32,7 @@ export type TPanorama = {
 }
 
 export type TPanoramaButton = TPanorama["buttons"][0]
+export type TPanoramaLevelsByZoom = TPanorama["LEVELS_BY_ZOOM"]
 
 /**
  * Модель объекта модальных окон
