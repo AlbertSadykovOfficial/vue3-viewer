@@ -70,7 +70,12 @@ export default defineComponent({
         loadAndRenderTiles(panoramas[currentPanorama], camera, sphere)
       })
 
-      const { bindAndLoad, loadAndRenderTiles } = useLoadAndRenderTiles(emit, textureLoader)
+      const { bindAndLoad, loadAndRenderTiles } = useLoadAndRenderTiles(textureLoader, {
+        onStartLoading:  (total) => emit('load-started', total),
+        onTileLoaded: () => emit('tile-loaded'),
+        onFinishLoading: () => emit('load-ended')
+      })
+
       const { animateZoomToPoint } = useAnimate(800, 30)
 
       const { startButtonClickListener, createNavigationButtons, deleteAllButtons } = useNavigationButtons(scene, camera, renderer, textureLoader,(button) => {

@@ -1,12 +1,30 @@
+import { TextureLoader} from '@/shared/lib/three'
+import type { PerspectiveCamera, Texture } from '@/shared/lib/three'
+import type { TPanorama, TPanoramaLevelsByZoom } from '../../../../model/types'
+
 import useLoadTiles from "./useLoadTiles";
 import useTilesVisible from "./useTilesVisible";
 import useMergeTiles from "./useMergeTiles";
 
+import type { TSphere } from './useSphere'
+
+type TCallbacksFunctions = {
+  onStartLoading: (total?: number) => void
+  onTileLoaded: () => void
+  onFinishLoading: () => void
+}
+
+const callbackFunctions: TCallbacksFunctions = {
+  onStartLoading: () => {},
+  onTileLoaded: () => {},
+  onFinishLoading: () => {}
+}
+
 /**
- * @param {Function} emit - Эмиттер vue
  * @param {THREE.TextureLoader} textureLoader - Загрузчик текстур
+ * @param {TCallbacksFunctions} callbacks - Функции обратного вызова
  */
-export default function useLoadAndRenderTiles(emit, textureLoader = new TextureLoader()) {
+export default function useLoadAndRenderTiles(textureLoader = new TextureLoader(), callbacks = callbackFunctions) {
   /** @type {number} Индекс X-размерности в panoramas.panorama.XY_TILE_RANGE */
   const X_INDEX = 0
 
@@ -17,7 +35,7 @@ export default function useLoadAndRenderTiles(emit, textureLoader = new TextureL
   const { isTileVisible, getTilesByCondition } = useTilesVisible()
   const { getTextureByMergeTiles } = useMergeTiles()
 
-  const load = async (prerender, tileXLen, tileYLen, urlTemplate, camera) => {
+  const load = async (prerender: boolean, tileXLen: number, tileYLen: number, urlTemplate: string, camera: PerspectiveCamera): Promise<{ textures: Array<Texture>, visibleTiles: Array<{ x: number, y: number }> }> => {
     let visibleTiles = getTilesByCondition(
       tileXLen,
       tileYLen,
@@ -27,27 +45,27 @@ export default function useLoadAndRenderTiles(emit, textureLoader = new TextureL
       }
     );
 
-    emit('load-started', visibleTiles.length)
+    callbacks.onStartLoading(visibleTiles.length)
 
     const textures = await Promise.all(
       visibleTiles.map(({ x, y }) =>
         loadTile(
-          urlTemplate.replace('{x}', x).replace('{y}', y),
-          () => { emit('tile-loaded') }
+          urlTemplate.replace('{x}', String(x)).replace('{y}', String(y)),
+          callbacks.onTileLoaded
         )
       )
     );
 
-    emit('load-ended')
-    return [textures, visibleTiles]
+    callbacks.onFinishLoading()
+    return { textures, visibleTiles }
   }
 
-  const getLevelByZoomFov = (levelsByZoom, zoom) => {
-    let target_zoom = 0
-    let max_zoom = target_zoom
+  const getLevelByZoomFov = (levelsByZoom: TPanoramaLevelsByZoom, zoom: number) => {
+    let target_zoom: number | string = 0
+    let max_zoom: number | string = target_zoom
     for (const zoomLevel in levelsByZoom) {
-      if (zoomLevel >= target_zoom) {
-        if (zoomLevel > zoom) {
+      if (Number(zoomLevel) >= Number(target_zoom)) {
+        if (Number(zoomLevel) > zoom) {
           return levelsByZoom[target_zoom]
         } else {
           max_zoom = zoomLevel
@@ -58,7 +76,7 @@ export default function useLoadAndRenderTiles(emit, textureLoader = new TextureL
     return levelsByZoom[max_zoom]
   }
 
-  const bindAndLoad = async (panorama, camera) => {
+  const bindAndLoad = async (panorama: TPanorama, camera: PerspectiveCamera) => {
     const textureLevel = getLevelByZoomFov(panorama.LEVELS_BY_ZOOM, camera.fov);
     const prerender = panorama.PRERENDER?.[textureLevel]
 
@@ -66,12 +84,11 @@ export default function useLoadAndRenderTiles(emit, textureLoader = new TextureL
     const tileYLen = panorama.XY_TILE_RANGE[textureLevel][Y_INDEX]
 
     const urlTemplate = `${panorama.tilesPath}${panorama.ZOOM_LEVELS[textureLevel]}`
-
-    return [...await load(prerender, tileXLen, tileYLen, urlTemplate, camera), tileXLen, tileYLen]
+    return { ...await load(prerender, tileXLen, tileYLen, urlTemplate, camera), tileXLen, tileYLen }
   }
 
-  const loadAndRenderTiles = async (panorama, camera, sphere) => {
-    const [textures, visibleTiles, tileXLen, tileYLen] = await bindAndLoad(panorama, camera)
+  const loadAndRenderTiles = async (panorama: TPanorama, camera: PerspectiveCamera, sphere: TSphere) => {
+    const { textures, visibleTiles, tileXLen, tileYLen } = await bindAndLoad(panorama, camera)
 
     if (sphere) {
       sphere.material.map = getTextureByMergeTiles(
