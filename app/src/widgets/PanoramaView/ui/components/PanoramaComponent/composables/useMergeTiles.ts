@@ -8,7 +8,7 @@ export default function useMergeTiles() {
    * @param {number} tileXLen - Кол-во тайлов при заданном качестве по X
    * @param {number} tileYLen - Кол-во тайлов при заданном качестве по Y
    */
-  const getTextureByMergeTiles = (textures, tiles, tileXLen, tileYLen) => {
+  const getTextureByMergeTiles = (textures: Array<Texture>, tiles: Array<{ x: number, y: number}>, tileXLen: number, tileYLen: number): Texture => {
     const tileSize = 256;
 
     const canvas = document.createElement('canvas');
@@ -16,11 +16,13 @@ export default function useMergeTiles() {
     canvas.height = tileYLen * 256;
     const ctx = canvas.getContext('2d');
 
-    textures.forEach((texture, index) => {
-      const { x, y } = tiles[index];
-      const img = texture.image;
-      ctx.drawImage(img, x * tileSize, y * tileSize, tileSize, tileSize);
-    });
+    if (ctx) {
+      textures.forEach((texture: Texture, index: number): void => {
+        const { x, y } = tiles[index];
+        const img = texture.image;
+        ctx.drawImage(img, x * tileSize, y * tileSize, tileSize, tileSize);
+      });
+    }
 
     const finalTexture = new Texture(canvas);
     finalTexture.needsUpdate = true;
