@@ -3,15 +3,16 @@
     :panoramas="panoramas"
   />
 </template>
-<script>
+<script lang="ts">
 import PanoramaView from '@/widgets/PanoramaView'
+import type { TPanoramaDict } from "@/widgets/PanoramaView/model/types";
 
 export default {
   components: {
     PanoramaView
   },
   setup () {
-    const panoramas = {
+    const panoramas = <TPanoramaDict>{
       panorama1: {
         tilesPath: '/merged/panorama1/',
         buttons: [
