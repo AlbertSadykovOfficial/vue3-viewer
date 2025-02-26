@@ -11,7 +11,7 @@ export default function useTilesVisible() {
    * @param {number} tileYLen - Кол-во тайлов при заданном качестве по Y
    * @return {boolean} Отображать ли тайл
    */
-  const isTileVisible = (camera: PerspectiveCamera, x: number, y: number, tileXLen: number, tileYLen: number) => {
+  const isTileVisible = (camera: PerspectiveCamera, x: number, y: number, tileXLen: number, tileYLen: number): boolean => {
     const k = 1 // Увеличивая коэффициент, область видимости расширяется
     const phi = ((y + k) / tileYLen) * Math.PI;
     const theta = ((x + k) / tileXLen) * 2 * Math.PI;
@@ -33,7 +33,7 @@ export default function useTilesVisible() {
    * @param {Function} conditionF - Условие для записи в список
    * @return {Array<{ x: number, y: number }>} Массив Значений для подгрузк тайлов
    */
-  const getTilesByCondition = (tileXLen: number, tileYLen: number, conditionF: (x: number, y: number) => boolean) => {
+  const getTilesByCondition = (tileXLen: number, tileYLen: number, conditionF: (x: number, y: number) => boolean): Array<{ x: number, y: number }> => {
     const tilesInView = [];
     for (let y = 0; y < tileYLen; y++) {
       for (let x = 0; x < tileXLen; x++) {
