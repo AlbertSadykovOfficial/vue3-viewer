@@ -1,6 +1,16 @@
 import { Texture } from '@/shared/lib/three';
 
 export default function useMergeTiles() {
+  let background: Texture | null = null
+
+  /**
+   * Замкнуть текстуру заднего фона
+   * @param {THREE.Texture} texture - Текстура
+   */
+  const bindBackgroundImage = (texture: Texture | null) => {
+    background = texture
+  }
+
   /**
    * Создать текстуру из тайлов
    * @param {Array<THREE.Texture>} textures - Массив текстур
@@ -17,6 +27,13 @@ export default function useMergeTiles() {
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
+      /**
+       * Отрисовка текстуры заднего фона при ее наличии
+       */
+      if (background && background?.isTexture) {
+        ctx.drawImage(background.image, 0, 0, canvas.width, canvas.height);
+      }
+
       textures.forEach((texture: Texture, index: number): void => {
         const { x, y } = tiles[index];
         const img = texture.image;
@@ -29,5 +46,5 @@ export default function useMergeTiles() {
     return finalTexture
   };
 
-  return { getTextureByMergeTiles };
+  return { getTextureByMergeTiles, bindBackgroundImage };
 }
