@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineOptions, defineProps, defineEmits, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { TextureLoader, Vector3 } from '@/shared/lib/three';
 
 import useScene from "./composables/useScene"
