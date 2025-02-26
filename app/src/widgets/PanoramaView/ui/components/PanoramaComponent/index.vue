@@ -82,7 +82,7 @@ const setup = () => {
     loadAndRenderTiles(panoramas[currentPanorama], camera, sphere)
   })
 
-  const { bindAndLoad, loadAndRenderTiles } = useLoadAndRenderTiles(textureLoader, {
+  const { bindAndLoad, loadAndRenderTiles, bindBackgroundImage } = useLoadAndRenderTiles(textureLoader, {
     onStartLoading:  (total) => emit('load-started', total),
     onTileLoaded: () => emit('tile-loaded'),
     onFinishLoading: () => emit('load-ended')
@@ -90,13 +90,17 @@ const setup = () => {
 
   const { animateZoomToPoint } = useAnimate(800, 30)
 
-  const { startButtonClickListener, createNavigationButtons, deleteAllButtons } = useNavigationButtons(scene, camera, renderer, textureLoader,(button) => {
+  const { startButtonClickListener, createNavigationButtons, deleteAllButtons } = useNavigationButtons(scene, camera, renderer, textureLoader, (button) => {
     /**
      * Чтоб не ждать завершения анимации
      * Подгружаем [в кэш]! тайлы панорамы на которую переходим
      * (Но не рендерим)
      */
     bindAndLoad(panoramas[button.nextPanoramaKey], camera)
+    /**
+     * Также подгружаем задний фон для следующей панорамы
+     */
+    bindBackgroundImage(panoramas[button.nextPanoramaKey])
 
     /**
      * Производим анимацию зума к точке
@@ -164,6 +168,8 @@ const setup = () => {
   // Начинаем отслеживать скролл
   startScrollListener()
 
+  // Устанавливаем задний фон 
+  bindBackgroundImage(panoramas[currentPanorama])
 
   // Обновляем состояние сцены
   refreshScene();
