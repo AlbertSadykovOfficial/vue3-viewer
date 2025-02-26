@@ -55,7 +55,7 @@ export default function useLoadAndRenderTiles(textureLoader = new TextureLoader(
     /**
      * Загружаем все текстуры (preload = true) для выбранного уровня текстур
      */
-    const { textures, visibleTiles } = await load(preload, tileXLen, tileYLen, urlTemplate)
+    const { textures, visibleTiles } = await load(urlTemplate, tileXLen, tileYLen)
     
     /**
      * Сбрасываем предыдущую замкнутую текстуру getTextureByMergeTiles
@@ -78,7 +78,7 @@ export default function useLoadAndRenderTiles(textureLoader = new TextureLoader(
     bindBackgroundImageCanvas(background)
   }
 
-  const load = async (prerender: boolean, tileXLen: number, tileYLen: number, urlTemplate: string, camera?: PerspectiveCamera): Promise<{ textures: Array<Texture>, visibleTiles: Array<{ x: number, y: number }> }> => {
+  const load = async (urlTemplate: string, tileXLen: number, tileYLen: number, camera?: PerspectiveCamera, prerender?: boolean): Promise<{ textures: Array<Texture>, visibleTiles: Array<{ x: number, y: number }> }> => {
     let visibleTiles = getTilesByCondition(
       tileXLen,
       tileYLen,
@@ -126,7 +126,7 @@ export default function useLoadAndRenderTiles(textureLoader = new TextureLoader(
     const tileYLen = panorama.XY_TILE_RANGE[textureLevel][Y_INDEX]
 
     const urlTemplate = `${panorama.tilesPath}${panorama.ZOOM_LEVELS[textureLevel]}`
-    return { ...await load(prerender, tileXLen, tileYLen, urlTemplate, camera), tileXLen, tileYLen }
+    return { ...await load(urlTemplate, tileXLen, tileYLen, camera, prerender), tileXLen, tileYLen }
   }
 
   const loadAndRenderTiles = async (panorama: TPanorama, camera: PerspectiveCamera, sphere: TSphere) => {
