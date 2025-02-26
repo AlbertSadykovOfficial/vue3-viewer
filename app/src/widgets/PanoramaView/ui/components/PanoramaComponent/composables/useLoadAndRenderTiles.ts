@@ -37,6 +37,7 @@ export default function useLoadAndRenderTiles(textureLoader = new TextureLoader(
 
   /**
    * Установить самый низкий уровень текстур как задний фон
+   * @async
    * @param {TPanorama} panorama - Объект панорамы
    * @param {PerspectiveCamera} camera - Камера [Этот параметр нужен для совместимости, с у нас preload=true камера не требуется]
    */
@@ -78,6 +79,15 @@ export default function useLoadAndRenderTiles(textureLoader = new TextureLoader(
     bindBackgroundImageCanvas(background)
   }
 
+  /**
+   * Вычислить тестуры, которые нужны для отрисовки и загрузить их
+   * @async
+   * @param {string} urlTemplate - Шаблон url с подстановочными параметрами (x, y) по которому будут загружены тайлы
+   * @param {number} tileXLen - Общее кол-во тайлов по оси x
+   * @param {number} tileYLen - Общее кол-во тайлов по оси y
+   * @param {PerspectiveCamera} camera - Камера (необходима для вычисления тайлов в оласти видимости)
+   * @param {boolean} prerender - Загрузить тайлы полностью
+   */
   const load = async (urlTemplate: string, tileXLen: number, tileYLen: number, camera?: PerspectiveCamera, prerender?: boolean): Promise<{ textures: Array<Texture>, visibleTiles: Array<{ x: number, y: number }> }> => {
     let visibleTiles = getTilesByCondition(
       tileXLen,
@@ -102,6 +112,11 @@ export default function useLoadAndRenderTiles(textureLoader = new TextureLoader(
     return { textures, visibleTiles }
   }
 
+  /**
+   * Получить уровень текстур соответствующий зуму
+   * @param {TPanoramaLevelsByZoom} levelsByZoom - Уровни в соответствии с зумом
+   * @param {number} zoom - Зум (camera.fov)
+   */
   const getLevelByZoomFov = (levelsByZoom: TPanoramaLevelsByZoom, zoom: number) => {
     let target_zoom: number | string = 0
     let max_zoom: number | string = target_zoom
@@ -118,6 +133,13 @@ export default function useLoadAndRenderTiles(textureLoader = new TextureLoader(
     return levelsByZoom[max_zoom]
   }
 
+  /**
+   * Загрузка текстур
+   * (bind приписка как сахар, кэш реализует useLoadTiles())
+   * @async
+   * @param {TPanorama} panorama - Объект панорамы
+   * @param {PerspectiveCamera} camera - Камера
+   */
   const bindAndLoad = async (panorama: TPanorama, camera: PerspectiveCamera) => {
     const textureLevel = getLevelByZoomFov(panorama.LEVELS_BY_ZOOM, camera.fov);
     const prerender = panorama.PRERENDER?.[textureLevel]
@@ -129,6 +151,13 @@ export default function useLoadAndRenderTiles(textureLoader = new TextureLoader(
     return { ...await load(urlTemplate, tileXLen, tileYLen, camera, prerender), tileXLen, tileYLen }
   }
 
+  /**
+   * Загрузка текстур и их рендер
+   * @async
+   * @param {TPanorama} panorama - Объект панорамы
+   * @param {PerspectiveCamera} camera - Камера
+   * @param {TSphere} sphere - Сфера отрисовки
+   */
   const loadAndRenderTiles = async (panorama: TPanorama, camera: PerspectiveCamera, sphere: TSphere) => {
     const { textures, visibleTiles, tileXLen, tileYLen } = await bindAndLoad(panorama, camera)
 
