@@ -83,7 +83,7 @@ const setup = () => {
   })
 
   const { bindAndLoad, loadAndRenderTiles, bindBackgroundImage } = useLoadAndRenderTiles(textureLoader, {
-    onStartLoading:  (total) => emit('load-started', total),
+    onStartLoading:  (total) => typeof total === 'number' && emit('load-started', total),
     onTileLoaded: () => emit('tile-loaded'),
     onFinishLoading: () => emit('load-ended')
   })
