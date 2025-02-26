@@ -33,15 +33,57 @@ export default function useLoadAndRenderTiles(textureLoader = new TextureLoader(
 
   const { loadTile } = useLoadTiles(textureLoader)
   const { isTileVisible, getTilesByCondition } = useTilesVisible()
-  const { getTextureByMergeTiles } = useMergeTiles()
+  const { getTextureByMergeTiles, bindBackgroundImage: bindBackgroundImageCanvas  } = useMergeTiles()
 
-  const load = async (prerender: boolean, tileXLen: number, tileYLen: number, urlTemplate: string, camera: PerspectiveCamera): Promise<{ textures: Array<Texture>, visibleTiles: Array<{ x: number, y: number }> }> => {
+  /**
+   * Установить самый низкий уровень текстур как задний фон
+   * @param {TPanorama} panorama - Объект панорамы
+   * @param {PerspectiveCamera} camera - Камера [Этот параметр нужен для совместимости, с у нас preload=true камера не требуется]
+   */
+  const bindBackgroundImage = async (panorama: TPanorama) => {
+    const preload = true
+    /**
+     * Выбираем самое плохое качество для текущей панорамы (для этого имитируем zoom = 100)
+     */
+    const textureLevel = getLevelByZoomFov(panorama.LEVELS_BY_ZOOM, 100)
+
+    const tileXLen = panorama.XY_TILE_RANGE[textureLevel][X_INDEX]
+    const tileYLen = panorama.XY_TILE_RANGE[textureLevel][Y_INDEX]
+
+    const urlTemplate = `${panorama.tilesPath}${panorama.ZOOM_LEVELS[textureLevel]}`
+
+    /**
+     * Загружаем все текстуры (preload = true) для выбранного уровня текстур
+     */
+    const { textures, visibleTiles } = await load(preload, tileXLen, tileYLen, urlTemplate)
+    
+    /**
+     * Сбрасываем предыдущую замкнутую текстуру getTextureByMergeTiles
+     */
+    bindBackgroundImageCanvas(null)
+
+    /**
+     * Создаем единую тектуру из набора текстур
+     */
+    const background = getTextureByMergeTiles(
+      textures,
+      visibleTiles,
+      tileXLen,
+      tileYLen
+    )
+
+    /**
+     * Отправляем полученную текстуру в замыкание getTextureByMergeTiles
+     */
+    bindBackgroundImageCanvas(background)
+  }
+
+  const load = async (prerender: boolean, tileXLen: number, tileYLen: number, urlTemplate: string, camera?: PerspectiveCamera): Promise<{ textures: Array<Texture>, visibleTiles: Array<{ x: number, y: number }> }> => {
     let visibleTiles = getTilesByCondition(
       tileXLen,
       tileYLen,
       (x, y) => {
-        // return prerender || isTileVisible(x, y, tileXLen, tileYLen)
-        return prerender || isTileVisible(camera, x, y, tileXLen, tileYLen)
+        return prerender || !camera || isTileVisible(camera, x, y, tileXLen, tileYLen)
       }
     );
 
@@ -101,5 +143,5 @@ export default function useLoadAndRenderTiles(textureLoader = new TextureLoader(
     }
   }
 
-  return { load, bindAndLoad, loadAndRenderTiles };
+  return { load, bindAndLoad, loadAndRenderTiles, bindBackgroundImage };
 }
